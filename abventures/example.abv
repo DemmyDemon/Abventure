@@ -1,0 +1,82 @@
+Example Adventure
+
+%Begin      Your adventure has begun.
+%Map        You have a map. It is labeled "sPooM" in large, friendly letters. You may be holding it upside-down.
+%Torch      You hold a lit torch bright enough to light up your immediate area.
+%SoggyTorch Your torch has become soggy, and can't be lit.
+%Success    You made it out! Much wow! Such success!
+
+# Note that the indentation for each cell here is entirely optional, and is done just to make
+# the example easier to read.
+
+:Start Hallway
+    
+    @Success Here we go again!
+
+    &Begin You have fallen into a hole, and it has closed above you, plunging you into darkness.
+    &Map This place is not marked on your map at all.
+    !SoggyTorch &Torch You light your torch.
+    You are standing in the middle of a hallway.
+    You can go either way. There is a draft.
+
+    >Stairs Follow the draft
+    >Well Go against the draft
+
+:Stairs
+
+    A spiral stircase goes down.
+    ?Torch You can't see around the corners.
+    !Torch It is pitch black, but you can feel the edges of the stairs and the curve of the wall.
+    You can hear faint growling from below.
+
+    >Eaten Continue down the stairs.
+    >Start Go back.
+
+:Eaten
+
+    ?Torch You walk down the stairs.
+    !Torch You stumble down the stairs.
+    ?Torch At the bottom, there is a very large leopard.
+    !Torch As you reach the bottom, you are attacked by a large animal.
+    Let's just say it's not hungry anymore.
+
+    # This is a failure state, so let's just remove all the items, just to be sure.
+    @Begin
+    @Map
+    @Torch
+    @SoggyTorch
+    @Success
+    >Start Try again.
+
+:Well A well room
+
+    In the middle of the room there is a large well. You can softly hear running water in the bottom of the well.
+
+    ?Torch >WellCheck Hold your torch over the well to check how deep it is.
+    >River Jump in the well.
+    >Start Go back.
+
+:WellCheck The well
+
+    You try to check how deep the well is, and discover that water is dripping from above.
+    &SoggyTorch Water gets on your torch!
+    @Torch Your torch goes out.
+    >Well Aw man! Rotten luck.
+
+:River
+
+    You jump into the well, and land in an underground river.
+    @Torch Your torch goes out. Obviously.
+    &SoggyTorch Your torch is all soggy now.
+    After bobbing around for almost an hour, you can see a light.
+    >Out Rejoyce and keep floating towards the light.
+
+:Out
+    # This is the win state, so let's clear the inventory.
+    @Begin
+    @Map
+    @Torch
+    @SoggyTorch
+    # Except the success,     
+    &Success You made it out! Congratulations!
+    >Start Go again!
