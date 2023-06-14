@@ -1,0 +1,27 @@
+Test abventure - The first line is always the abventure name.
+
+    %Item Declaring items can be done anywhere, but it is recommended to do so at the tippy top of the file.
+    %Torch A lit torch that gives up enough light to light up the whole room.
+    %Shovel A crude shovel with some dried dirt on it.
+    %Ring-of-insight A ring that reveals things hidden by magic. It glows a soft blue.
+    %Note Adding items to the middle of the item list will break existing inventories, so take care to always ad to the end, if at all possible.
+    %Limitation There can only be 64 items. They are stored as bits in a UINT64, which, as the name implies, has 64 bits.
+
+:Start Abventure starts here
+
+    This is the opening cell of the abventure. If no room is given, :Start is assumed. :Start does not have to be the first cell of the file, but it is recommended.
+    Labels are a single word and may not contain spaces. Anything after the first word is considered the cell's title.
+    In the absense of a title, the cell's name, except for the colon, is displayed instead.
+    Each line is a a separate instruction. If it does not match any instruction, it is assumed to be adventure text to be displayed as is.
+    Blank lines are ignored. Leading and trailing whitespace is trimmed, so feel free to indent, or not.
+
+    ?Ring-of-insight This line is only visible if you have the Ring Of Insight item.
+    Item names can not have spaces in them, but any dashes are fine.
+
+    >Elsewhere This is a link to a different cell named Elsewhere. The whole line is a link.
+    ?Torch >Elsewhere This link only exists if you have the Tortch item.
+    Note that instructions must have spaces between them!
+
+:Elsewhere
+
+    A cell continues until EOF, or until a new cell is declared with a new top-level name.

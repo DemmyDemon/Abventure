@@ -75,7 +75,7 @@ Keep in mind that items don't have to be actual, physical items. They can just a
 
 Examples:
 ```
-%Map You have a map. It is labeled "sPooM" in large, friendly letters.
+%Map You have a map. It is labeled "spoom" in large, friendly letters.
 %Torch You hold a lit torch bright enough to light up your immediate area.
 %Bravery You have the heart of a lion. Not a cowardly one, either!
 ```
@@ -106,9 +106,10 @@ Examples:
 ### & → Item added
 
 - *Must* contain a valid single-word canonical item name.
-- *May* be followed by text to be displayed, or additional instructions.
+- *May* be followed by text to be displayed.
+- *Must not* be followed by any additional instructions.
 
-Note that this is a conditional, meaning that if you already have the item, it is *not* added, and any following text is not displayed, and any following instructions are not followed!
+Note that this is a conditional, meaning that if you already have the item, it is *not* added, and any following text is not displayed.
 
 Examples:
 ```
@@ -119,9 +120,10 @@ Examples:
 ### @ → Item removed
 
 - *Must* contain a valid single-word canonical item name.
-- *May* be followed by text to be displayed, or additional instructions.
+- *May* be followed by text to be displayed.
+- *Must not* be followed by additional instructions.
 
-Note taht this is a conditional, meaning that if you do not have the item, it can't be removed, and any following text is not displayed, and any following instructions are not followed!
+Note that this is a conditional, meaning that if you do not have the item, it can't be removed, and any following text is not displayed.
 
 Examples:
 ```
@@ -138,6 +140,6 @@ This is provided as a way to enter comments into the abventure file that will no
 Examples:
 ```
 # ITEM LIST #
-%Wagon A small, red wagon. # This was used in a previous version, but is now only here to not break inventories.
+%Wagon You're pulling along a small, red wagon. # This was used in a previous version. Only here to not break inventories.
 # Next time, maybe I should develop the abventure a little more before releasing it. Oh well, whatever.
 ```

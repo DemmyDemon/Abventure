@@ -8,9 +8,16 @@ import (
 
 func TestSingleHash(t *testing.T) {
 	knownGoodResult := "0044ff4a"
-	hash := hash.Single("This is a test")
-	if hash != knownGoodResult {
-		t.Errorf("util.Hash generated was wrong. Expected %s, got %s", knownGoodResult, hash)
+	result := hash.Single("This is a test")
+	if result != knownGoodResult {
+		t.Errorf("hash.Single generated hash was wrong. Expected %s, got %s", knownGoodResult, result)
+	}
+}
+
+func TestStart(t *testing.T) {
+	result := hash.Single("Start")
+	if result != hash.PrecalcStart {
+		t.Errorf("hash.PrecalcStart does not match. Expected %s, got %s", hash.PrecalcStart, result)
 	}
 }
 

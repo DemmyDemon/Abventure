@@ -1,0 +1,33 @@
+Single Cell Abventure
+
+%Item An item to test with
+%Another Another item to test with
+
+:Start Amoeba
+
+    Unconditional line
+    !Item Negative check
+    &Item Added item
+
+    ?Item Positive check
+    @Item Removed item
+    ?Item Positive check, item not there
+
+    !Item Negative check again
+    &Item Add back for inventory UL test
+
+    Unconditional line
+
+    >Plop Broken link
+    >Start Self-link
+    >Lied Link to other cell
+
+:Lied
+    
+    Obviously, I lied about this being single-celled.
+    ?Another You already have the the other item.
+    ?Item &Another Gave another.
+    @Item Took your item.
+
+    >Start Go back
+

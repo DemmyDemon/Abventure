@@ -14,8 +14,9 @@ type Item struct {
 
 // Inventory holds the inventory state and the item descriptions
 type Inventory struct {
-	state uint64
-	items map[string]Item
+	state   uint64
+	Items   map[string]Item
+	Verbose bool `json:"-"`
 }
 
 // New creates an empty inventory with no items described
@@ -23,15 +24,22 @@ func New() *Inventory {
 	empty := make(map[string]Item)
 	return &Inventory{
 		state: 0,
-		items: empty,
+		Items: empty,
 	}
 }
 
 // FromExisting creates an empty inventory containing the item definition from the inventory passed to it.
 func FromExisting(inv *Inventory) *Inventory {
 	return &Inventory{
-		state: 0,
-		items: inv.items,
+		state:   0,
+		Items:   inv.Items,
+		Verbose: inv.Verbose,
+	}
+}
+
+func (inv *Inventory) bark(format string, a ...any) {
+	if inv.Verbose {
+		fmt.Printf(format, a...)
 	}
 }
 
@@ -40,19 +48,21 @@ func FromExisting(inv *Inventory) *Inventory {
 func (inv *Inventory) Define(name string, desciption string) {
 
 	// If it already exists, we just update the description.
-	if old, exists := inv.items[name]; exists {
+	if old, exists := inv.Items[name]; exists {
 		old.Description = desciption
-		inv.items[name] = old
+		inv.Items[name] = old
+		inv.bark("%s updated\n", name)
 		return
 	}
 
-	slot := len(inv.items)
+	slot := len(inv.Items)
 	id := uint64(1 << slot)
 	item := Item{
 		ID:          id,
 		Description: desciption,
 	}
-	inv.items[name] = item
+	inv.Items[name] = item
+	inv.bark("%s defined (%02d)\n", name, id)
 }
 
 func (inv *Inventory) Describe(name string) string {
@@ -60,6 +70,7 @@ func (inv *Inventory) Describe(name string) string {
 	if exist {
 		return item.Description
 	}
+	inv.bark("Can't describe %s: No such item!\n", name)
 	return ""
 }
 
@@ -67,8 +78,8 @@ func (inv *Inventory) Describe(name string) string {
 func (inv *Inventory) Contents() []string {
 
 	// First we get just the items we actually have in the inventory
-	items := make([]Item, 0, len(inv.items))
-	for _, item := range inv.items {
+	items := make([]Item, 0, len(inv.Items))
+	for _, item := range inv.Items {
 		if inv.HasItem(item) {
 			items = append(items, item)
 		}
@@ -94,7 +105,7 @@ func (inv *Inventory) Contents() []string {
 func (inv *Inventory) DebugTable() {
 	fmt.Println(" Has | ID | Name       | Description")
 	fmt.Println("-----+----+------------+------------")
-	for name, item := range inv.items {
+	for name, item := range inv.Items {
 		has := " "
 		if inv.Has(item.ID) {
 			has = "*"
@@ -107,7 +118,8 @@ func (inv *Inventory) DebugTable() {
 
 // Lookup takes an item name and returns the Item struct for it, and a bool indicating if it exists or not.
 func (inv *Inventory) Lookup(name string) (Item, bool) {
-	item, ok := inv.items[name]
+	item, ok := inv.Items[name]
+	inv.bark("Lookup of %s: %v\n", name, ok)
 	return item, ok
 }
 
@@ -131,18 +143,62 @@ func (inv *Inventory) HasItem(item Item) bool {
 	return inv.state&item.ID != 0
 }
 
+// HasAny returns true if any of the given names matches a held item.
+func (inv *Inventory) HasAny(names []string) bool {
+
+	// If no items are specified, by definition we don't have any of them.
+	if len(names) == 0 {
+		return false
+	}
+
+	for _, candidate := range names {
+		item, exist := inv.Lookup(candidate)
+		if !exist {
+			// If it's a non-existant item, we can't possibly have it in our inventory!
+			continue
+		}
+		if inv.HasItem(item) {
+			return true
+		}
+	}
+	return false
+}
+
+// HasAll returns true if all of the given items match a held item.
+func (inv *Inventory) HasAll(names []string) bool {
+
+	// We always have all of the non-items. An empty set is a set we possess all members of, by definition.
+	if len(names) == 0 {
+		return true
+	}
+	for _, candidate := range names {
+		item, exist := inv.Lookup(candidate)
+		if !exist {
+			// We can't possibly have a non-existant item in our inventory!
+			return false
+		}
+		if !inv.HasItem(item) {
+			return false
+		}
+	}
+	return true
+}
+
 // Add adds the named item to the inventory, returning if the operation was successful.
 // Note that "item was misspelled" and "item was already in there" both return false.
 func (inv *Inventory) Add(name string) bool {
 	item, exist := inv.Lookup(name)
 	if !exist {
+		inv.bark("Could not add item %q: Not defined!\n", name)
 		return false
 	}
 
 	if inv.HasItem(item) {
+		inv.bark("Could not add item: %q: Already possessed!\n", name)
 		return false
 	}
 
+	inv.bark("Added item %q\n", name)
 	inv.AddItem(item)
 	return true
 }
@@ -157,12 +213,15 @@ func (inv *Inventory) AddItem(item Item) {
 func (inv *Inventory) Remove(name string) bool {
 	item, exist := inv.Lookup(name)
 	if !exist {
+		inv.bark("Could not remove item %q: Not defined!\n", name)
 		return false
 	}
 	if inv.HasItem(item) {
+		inv.bark("Removed item %q\n", name)
 		inv.RemoveItem(item)
 		return true
 	}
+	inv.bark("Could not remove item %q: Not possessed!\n", name)
 	return false
 }
 

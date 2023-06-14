@@ -1,7 +1,7 @@
-Example Adventure
+Example Abventure
 
 %Begin      Your adventure has begun.
-%Map        You have a map. It is labeled "sPooM" in large, friendly letters. You may be holding it upside-down.
+%Map        You have a map. It is labeled "spoom" in large, friendly letters. You may be holding it upside-down.
 %Torch      You hold a lit torch bright enough to light up your immediate area.
 %SoggyTorch Your torch has become soggy, and can't be lit.
 %Success    You made it out! Much wow! Such success!
@@ -38,7 +38,7 @@ Example Adventure
     !Torch You stumble down the stairs.
     ?Torch At the bottom, there is a very large leopard.
     !Torch As you reach the bottom, you are attacked by a large animal.
-    Let's just say it's not hungry anymore.
+    Let's just say, it's not hungry anymore.
 
     # This is a failure state, so let's just remove all the items, just to be sure.
     @Begin
@@ -48,7 +48,7 @@ Example Adventure
     @Success
     >Start Try again.
 
-:Well A well room
+:Well Well room
 
     In the middle of the room there is a large well. You can softly hear running water in the bottom of the well.
 

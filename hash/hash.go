@@ -2,6 +2,8 @@ package hash
 
 import "fmt"
 
+const PrecalcStart = "b72c5e85" // For the Start cell
+
 // Single is a quick-and-dirty approximation of a JOAAT hash, returned as a lower case hexadecimal string.
 func Single(original string) (result string) {
 	hash := uint32(0)
