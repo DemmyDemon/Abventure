@@ -185,6 +185,8 @@ func Listings(w http.ResponseWriter, r *http.Request, list *listing.Index) error
 
 	w.Write([]byte("<h2>Have an Abventure!</h2>"))
 
+	list.Refresh()
+
 	err = list.Write(w)
 	if err != nil {
 		return fmt.Errorf("listing handler: %w", err)

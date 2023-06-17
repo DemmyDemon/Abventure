@@ -76,7 +76,7 @@ func (idx *Index) Refresh() error {
 		if lst, ok := idx.listings[shortName]; ok {
 			if info.ModTime().After(lst.FileTime) {
 				lst.Abventure = nil // That is, the file has changed, so should be re-read.
-				lst.Title = readFirstLine(idx.path + lst.FileName)
+				lst.Title = readFirstLine(lst.FileName)
 			}
 		} else {
 			idx.listings[shortName] = &Listing{
