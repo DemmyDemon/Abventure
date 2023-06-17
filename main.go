@@ -4,6 +4,7 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -101,6 +102,21 @@ func onAbventure(w http.ResponseWriter, name string, cell string, stuff uint64, 
 	}
 }
 
+func dumpFile(w http.ResponseWriter, r *http.Request, filename string) {
+	w.Header().Add("content-type", "text/plain")
+	file, err := os.Open(filename)
+	if err != nil {
+		fmt.Printf("[%s] %s: %s\n", r.RemoteAddr, filename, err)
+		return
+	}
+	data, err := io.ReadAll(file)
+	if err != nil {
+		fmt.Printf("[%s] %s: %s\n", r.RemoteAddr, filename, err)
+		return
+	}
+	w.Write(data)
+}
+
 func main() {
 
 	idx := listing.NewIndex("abventures/")
@@ -116,9 +132,13 @@ func main() {
 
 	if dumperEnabled {
 		fmt.Println("WARNING: ABV DUMPER IS ENABLED")
-		r.Get("/{abventure:[a-zA-Z0-9_-]+}.abv", func(w http.ResponseWriter, r *http.Request) {
+		r.Get("/{abventure:[a-zA-Z0-9_-]+}.json", func(w http.ResponseWriter, r *http.Request) {
 			name := chi.URLParam(r, "abventure")
 			parseAbventure(w, name)
+		})
+		r.Get("/{abventure:[a-zA-Z0-9_-]+}.abv", func(w http.ResponseWriter, r *http.Request) {
+			name := chi.URLParam(r, "abventure")
+			dumpFile(w, r, filepath.Clean("abventures/"+name+".abv"))
 		})
 	}
 
